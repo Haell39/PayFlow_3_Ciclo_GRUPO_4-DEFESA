@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayFlow — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="bi bi-lock-fill"></i></div>
+      <div class="logo-text">Pay<span>Flow</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Principal</span>
+      <a class="nav-item {% if active == 'dashboard' %}active{% endif %}" href="{{ url_for('pagina_dashboard') }}">
+        <i class="bi bi-grid-1x2-fill nav-icon"></i> Dashboard
+      </a>
+      <a class="nav-item {% if active == 'transacoes' %}active{% endif %}" href="{{ url_for('pagina_transacoes') }}">
+        <i class="bi bi-arrow-left-right nav-icon"></i> Transações
+        <span class="nav-badge">12</span>
+      </a>
+      <span class="nav-section-label">Serviços</span>
+      <a class="nav-item {% if active == 'cartoes' %}active{% endif %}" href="{{ url_for('pagina_cartoes') }}">
+        <i class="bi bi-credit-card-2-front-fill nav-icon"></i> Cartões
+      </a>
+      <a class="nav-item {% if active == 'investimentos' %}active{% endif %}" href="{{ url_for('pagina_investimentos') }}">
+        <i class="bi bi-graph-up-arrow nav-icon"></i> Investimentos
+      </a>
+      <span class="nav-section-label">Conta</span>
+      <a class="nav-item {% if active == 'seguranca' %}active{% endif %}" href="{{ url_for('pagina_seguranca') }}">
+        <i class="bi bi-shield-check nav-icon"></i> Segurança
+      </a>
+      <a class="nav-item {% if active == 'perfil' %}active{% endif %}" href="{{ url_for('pagina_perfil') }}">
+        <i class="bi bi-person-circle nav-icon"></i> Perfil
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" id="sb-initials">--</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-nome">Carregando…</div>
+          <div class="user-email" id="sb-email"></div>
+        </div>
+        <i class="bi bi-power user-logout" title="Sair" id="btn-logout"></i>
+      </div>
+    </div>
+  </aside>
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">Dashboard</div>
+        <div class="topbar-sub">Visão geral da sua conta</div>
+      </div>
+      <div class="topbar-right">
+        <div class="user-avatar" id="top-initials" style="width:36px;height:36px;font-size:14px">--</div>
+      </div>
+    </header>
+    <div class="page-content">
+      <div id="stats-grid" class="stats-grid"></div>
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Receita vs Despesa</span>
+            <span class="panel-action">Últimos 6 meses</span>
+          </div>
+          <div class="panel-body">
+            <div class="chart-wrap"><canvas id="balance-chart"></canvas></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Últimas movimentações</span>
+            <a class="panel-action" href="{{ url_for('pagina_transacoes') }}">Ver todas →</a>
+          </div>
+          <div id="recent-tx" class="tx-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast-wrap" class="toast-wrap"></div>
+<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/shared.js') }}"></script>
+<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

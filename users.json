@@ -1,0 +1,21 @@
+{
+  "usuario1@example.com": {
+    "nome": "Usuario Um",
+    "senha_hash": "$2b$12$318wNBcn4KPhWCEzcA6Ef.bxmqUveFqMxmEcLg0vkXs6F4UMgFMPK"
+  },
+  "teste_seguro@example.com": {
+    "nome": "Usuario Teste",
+    "senha_hash": "$2b$12$4o3OaRadog3kMUc6bsnaCOGlKASFPF0W2tBl0829CD0ErbHI497S.",
+    "criado_em": 1780611794.4946678
+  },
+  "usuario2@example.com": {
+    "nome": "Usuario Dois",
+    "senha_hash": "$2b$12$ILlI8uOukD0uwIotMh5eF.Kfi6Em5P4K4/HGQ7M9xkk.EdS13hCvS",
+    "criado_em": 1780614715.9383922
+  },
+  "usuario3@example.com": {
+    "nome": "Usuario Tres",
+    "senha_hash": "$2b$12$/2GFQe6j0bkHwHn9XRRJ7e9SkCX6mHMJxyixbbvcYmT1U9HOf3B/a",
+    "criado_em": 1780620033.1581235
+  }
+}

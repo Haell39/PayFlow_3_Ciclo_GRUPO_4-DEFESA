@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token }}">
+<title>PayFlow — Criar conta</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div id="auth-root" class="auth-body">
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon">$</div>
+      <div class="logo-text">Pay<span>Flow</span></div>
+    </div>
+    <div class="screen active">
+      <h2>Criar conta</h2>
+      <p class="subtitle">Preencha os dados para começar a transferir</p>
+      <div id="cadastro-msg" class="msg"></div>
+      <div class="field">
+        <label>Nome completo</label>
+        <input type="text" id="cad-nome" placeholder="João Silva">
+      </div>
+      <div class="field">
+        <label>E-mail</label>
+        <input type="email" id="cad-email" placeholder="seu@email.com">
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" id="cad-senha" placeholder="Mínimo 8 caracteres" oninput="avaliarSenha(this.value)">
+        <div class="strength-bar">
+          <span id="s1"></span><span id="s2"></span><span id="s3"></span><span id="s4"></span>
+        </div>
+        <p class="strength-label" id="strength-label"></p>
+      </div>
+      <div class="field">
+        <label>Confirmar Senha</label>
+        <input type="password" id="cad-senha-confirma" placeholder="••••••••">
+      </div>
+      <button class="btn" id="btn-fazer-cadastro">Criar conta</button>
+      <a href="{{ url_for('pagina_login') }}" class="btn btn-ghost" style="display:block;text-align:center;margin-top:0.5rem;text-decoration:none;padding:12px;border-radius:10px;">← Voltar ao login</a>
+    </div>
+  </div>
+</div>
+<div id="toast-wrap" class="toast-wrap"></div>
+<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/cadastro.js') }}"></script>
+</body>
+</html>

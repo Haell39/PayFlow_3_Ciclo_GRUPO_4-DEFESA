@@ -1,0 +1,274 @@
+Fiz uma análise rápida do projeto Flask que você enviou.
+
+## Resultado geral
+
+**Nota de segurança: 7,5/10**
+
+Você já implementou várias proteções importantes:
+
+✅ Senhas com bcrypt (`rounds=12`)
+✅ CSRF Token
+✅ OTP para login
+✅ Cookies HttpOnly
+✅ SameSite=Strict
+✅ CSP (Content Security Policy)
+✅ Headers de segurança
+✅ Rate Limiting básico
+✅ Timeout de sessão
+✅ Comparação constante (`compare_digest`) contra timing attacks
+
+---
+
+# Vulnerabilidades encontradas
+
+## 🔴 1. Chave secreta exposta no projeto
+
+Arquivo:
+
+```text
+.flask_secret
+```
+
+Contém:
+
+```text
+0498d6f22c3bab860d81f6e755e82fb2ac86cc1df26ecc2176f3b80aeaf352e6
+```
+
+Se esse arquivo for enviado ao GitHub ou vazar:
+
+* Um invasor pode forjar sessões Flask.
+* Pode assumir contas de usuários.
+
+### Correção
+
+Nunca versionar:
+
+```gitignore
+.flask_secret
+```
+
+Produção:
+
+```python
+app.secret_key = os.environ["FLASK_SECRET_KEY"]
+```
+
+---
+
+## 🔴 2. Banco de usuários em JSON
+
+Arquivo:
+
+```text
+users.json
+```
+
+Problemas:
+
+* Não possui criptografia.
+* Não possui controle de concorrência.
+* Pode ser baixado facilmente caso exista falha de acesso ao servidor.
+
+Hoje contém usuários reais:
+
+```json
+{
+  "yuri@gmail.com": ...
+}
+```
+
+### Correção
+
+Migrar para:
+
+* SQLite
+* PostgreSQL
+* MySQL
+
+---
+
+## 🟠 3. OTP armazenado em memória
+
+```python
+OTPS = {}
+```
+
+Problema:
+
+Se reiniciar o servidor:
+
+```bash
+systemctl restart
+```
+
+Todos os OTPs são perdidos.
+
+### Correção
+
+Guardar em:
+
+* Redis
+* Banco de dados
+
+---
+
+## 🟠 4. Proteção de brute force apenas por IP
+
+Hoje:
+
+```python
+LOGIN_ATTEMPTS[ip]
+```
+
+Problema:
+
+VPNs e proxies mudam de IP facilmente.
+
+Um atacante consegue:
+
+```text
+IP1 -> 5 tentativas
+IP2 -> 5 tentativas
+IP3 -> 5 tentativas
+```
+
+### Melhor
+
+Controlar:
+
+```python
+email + ip
+```
+
+ou
+
+```python
+email
+```
+
+também.
+
+---
+
+## 🟠 5. Session Fixation
+
+Após validar OTP você faz:
+
+```python
+session["usuario"] = email
+```
+
+Mas não regenera a sessão.
+
+### Melhor
+
+Após login:
+
+```python
+session.clear()
+```
+
+e criar nova sessão.
+
+---
+
+## 🟡 6. CSP permite unsafe-inline
+
+Hoje:
+
+```python
+script-src 'self' 'unsafe-inline'
+```
+
+Isso reduz a proteção contra XSS.
+
+### Melhor
+
+Usar:
+
+```python
+nonce
+```
+
+ou
+
+```python
+sha256
+```
+
+para scripts.
+
+---
+
+## 🟡 7. Sem proteção contra automação de cadastro
+
+Endpoint:
+
+```python
+/api/cadastrar
+```
+
+Possui rate limit.
+
+Mas não possui:
+
+* CAPTCHA
+* Cloudflare Turnstile
+* hCaptcha
+
+Um bot consegue criar milhares de contas.
+
+---
+
+## 🟡 8. Falta auditoria de segurança
+
+Não encontrei logs para:
+
+* Login realizado
+* Troca de senha
+* Falha OTP
+* Logout
+
+Isso dificulta detectar invasões.
+
+---
+
+# Não encontrei
+
+✅ SQL Injection (não usa SQL)
+✅ Command Injection
+✅ Path Traversal
+✅ SSRF
+✅ Deserialização insegura
+✅ Upload de arquivos vulnerável
+✅ XSS óbvio no backend
+✅ Debug ativo em produção
+
+---
+
+# O que eu faria antes de colocar em produção
+
+1. Remover `.flask_secret` do projeto.
+2. Remover `users.json`.
+3. Migrar para PostgreSQL.
+4. Adicionar Redis para OTP.
+5. Adicionar Cloudflare Turnstile.
+6. Melhorar o bloqueio por usuário.
+7. Implementar logs de auditoria.
+8. Configurar HTTPS obrigatório.
+
+## Avaliação final
+
+| Categoria     | Nota |
+| ------------- | ---- |
+| Autenticação  | 8/10 |
+| Sessão        | 8/10 |
+| Senhas        | 9/10 |
+| Proteção Web  | 8/10 |
+| Armazenamento | 4/10 |
+| Produção      | 7/10 |
+
+**Nota geral: 7,5/10**
+
+Para um projeto acadêmico ou MVP, está acima da média. Para uso financeiro real, eu faria algumas correções antes de considerar seguro para produção.

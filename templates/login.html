@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token }}">
+<title>PayFlow — Entrar</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div id="auth-root" class="auth-body">
+  <div class="auth-layout">
+    <div class="auth-image-side">
+      <div class="auth-image">
+        <img src="{{ url_for('static', filename='img/img-login.png') }}" alt="Ilustração">
+    </div>      <div class="auth-image-caption">
+        <div class="caption-title">Transfira com facilidade</div>
+        <div class="caption-sub">Envie e receba dinheiro de forma rápida e segura para qualquer pessoa.</div>
+      </div>
+    </div>
+    <div class="auth-form-side">
+      <div class="card">
+        <div class="logo">
+          <div class="logo-icon">$</div>
+          <div class="logo-text">Pay<span>Flow</span></div>
+        </div>
+        <div class="screen active">
+          <h2>Entrar na sua conta</h2>
+          <p class="subtitle">Sistema seguro de transferências com dois fatores</p>
+          <div id="login-msg" class="msg"></div>
+          <div class="field">
+            <label>E-mail</label>
+            <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
+          </div>
+          <div class="field">
+            <label>Senha</label>
+            <input type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <button class="btn" id="btn-fazer-login">Entrar →</button>
+          <div class="link-row">Não tem conta? <a href="{{ url_for('pagina_cadastro') }}">Criar conta grátis</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast-wrap" class="toast-wrap"></div>
+<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>

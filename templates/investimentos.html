@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayFlow — Investimentos</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="bi bi-lock-fill"></i></div>
+      <div class="logo-text">Pay<span>Flow</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Principal</span>
+      <a class="nav-item {% if active == 'dashboard' %}active{% endif %}" href="{{ url_for('pagina_dashboard') }}">
+        <i class="bi bi-grid-1x2-fill nav-icon"></i> Dashboard
+      </a>
+      <a class="nav-item {% if active == 'transacoes' %}active{% endif %}" href="{{ url_for('pagina_transacoes') }}">
+        <i class="bi bi-arrow-left-right nav-icon"></i> Transações
+        <span class="nav-badge">12</span>
+      </a>
+      <span class="nav-section-label">Serviços</span>
+      <a class="nav-item {% if active == 'cartoes' %}active{% endif %}" href="{{ url_for('pagina_cartoes') }}">
+        <i class="bi bi-credit-card-2-front-fill nav-icon"></i> Cartões
+      </a>
+      <a class="nav-item {% if active == 'investimentos' %}active{% endif %}" href="{{ url_for('pagina_investimentos') }}">
+        <i class="bi bi-graph-up-arrow nav-icon"></i> Investimentos
+      </a>
+      <span class="nav-section-label">Conta</span>
+      <a class="nav-item {% if active == 'seguranca' %}active{% endif %}" href="{{ url_for('pagina_seguranca') }}">
+        <i class="bi bi-shield-check nav-icon"></i> Segurança
+      </a>
+      <a class="nav-item {% if active == 'perfil' %}active{% endif %}" href="{{ url_for('pagina_perfil') }}">
+        <i class="bi bi-person-circle nav-icon"></i> Perfil
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" id="sb-initials">--</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-nome">Carregando…</div>
+          <div class="user-email" id="sb-email"></div>
+        </div>
+        <i class="bi bi-power user-logout" title="Sair" id="btn-logout"></i>
+      </div>
+    </div>
+  </aside>
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">Investimentos</div>
+        <div class="topbar-sub">Sua carteira de ativos e rentabilidade</div>
+      </div>
+      <div class="topbar-right">
+        <div class="user-avatar" id="top-initials" style="width:36px;height:36px;font-size:14px">--</div>
+      </div>
+    </header>
+    <div class="page-content">
+      <!-- Stats de Investimentos -->
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-icon">📈</div>
+          <div class="stat-info">
+            <div class="stat-label">Total Investido</div>
+            <div class="stat-value" id="invested-total">R$ 24.500,00</div>
+          </div>
+          <div class="stat-trend up">+12.4%</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <div class="stat-label">Rendimento Estimado</div>
+            <div class="stat-value" id="monthly-yield">R$ 248,50 /mês</div>
+          </div>
+          <div class="stat-trend up">+6.2%</div>
+        </div>
+        <div class="stat-card accent">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-info">
+            <div class="stat-label">Perfil de Risco</div>
+            <div class="stat-value" style="font-size:18px">Moderado</div>
+          </div>
+          <div class="stat-trend up" style="background:var(--green-pale); color:var(--green)">Perfil Ativo</div>
+        </div>
+      </div>
+
+      <!-- Layout Central de Gráfico e Simulação -->
+      <div class="dashboard-grid" style="margin-bottom: 1.5rem;">
+        <!-- Distribuição de Ativos -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Alocação da Carteira</span>
+            <span class="panel-action">Distribuição por Categoria</span>
+          </div>
+          <div class="panel-body" style="padding: 1.5rem; height: 320px;">
+            <div class="chart-wrap" style="height: 100%; position: relative;">
+              <canvas id="investments-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulação rápida de Compra e Resgate -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Simular Transação</span>
+          </div>
+          <div class="panel-body" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div class="field">
+              <label>Escolher Ativo</label>
+              <select id="invest-asset-select">
+                <option value="cdb">CDB Liquidez Diária (Renda Fixa)</option>
+                <option value="pflw3">Ações PayFlow S.A. (PFLW3)</option>
+                <option value="fii">Fundo Imobiliário (PFLW11)</option>
+                <option value="crypto">Bitcoin Tracker (Cripto)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Valor (R$)</label>
+              <input type="number" id="invest-amount" placeholder="0,00" min="10" step="10">
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 0.5rem;">
+              <button class="btn" style="flex:1; margin-top: 0;" id="btn-investir-buy">Investir</button>
+              <button class="btn btn-ghost" style="flex:1; margin-top: 0;" id="btn-investir-sell">Resgatar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de Detalhamento dos Ativos -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Seus Ativos</span>
+          <span class="panel-action">Detalhamento da Carteira</span>
+        </div>
+        <div class="panel-body" style="overflow-x: auto;">
+          <table class="tx-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="text-align: left; border-bottom: 1.5px solid var(--border)">
+                <th style="padding: 12px 16px;">Ativo</th>
+                <th style="padding: 12px 16px;">Classe</th>
+                <th style="padding: 12px 16px; text-align: right;">Total Aplicado</th>
+                <th style="padding: 12px 16px; text-align: right;">Rentabilidade</th>
+                <th style="padding: 12px 16px; text-align: center;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="assets-table-body">
+              <!-- Renderizado via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div id="toast-wrap" class="toast-wrap"></div>
+<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/shared.js') }}"></script>
+<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/investimentos.js') }}"></script>
+</body>
+</html>
