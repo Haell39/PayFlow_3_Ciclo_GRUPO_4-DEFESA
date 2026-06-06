@@ -119,6 +119,36 @@ def verificar_bloqueio(ip: str, email: str = None):
             
     return False, ""
 
+def cifra_cesar(texto: str, deslocamento: int, decodificar: bool = False) -> str:
+    if decodificar:
+        deslocamento = -deslocamento
+    resultado = []
+    for char in texto:
+        if char.isalpha():
+            limite = ord('A') if char.isupper() else ord('a')
+            resultado.append(chr((ord(char) - limite + deslocamento) % 26 + limite))
+        else:
+            resultado.append(char)
+    return "".join(resultado)
+
+def cifra_vigenere(texto: str, chave: str, decodificar: bool = False) -> str:
+    if not chave:
+        return texto
+    resultado = []
+    chave = chave.lower()
+    chave_idx = 0
+    for char in texto:
+        if char.isalpha():
+            limite = ord('A') if char.isupper() else ord('a')
+            deslocamento = ord(chave[chave_idx % len(chave)]) - ord('a')
+            if decodificar:
+                deslocamento = -deslocamento
+            resultado.append(chr((ord(char) - limite + deslocamento) % 26 + limite))
+            chave_idx += 1
+        else:
+            resultado.append(char)
+    return "".join(resultado)
+
 def enviar_email_otp(email_destino, codigo):
     # Lendo as credenciais de remetente a partir das variáveis de ambiente (carregadas via .env ou terminal)
     smtp_server = os.environ.get("SMTP_SERVER", "smtp.gmail.com")
@@ -138,9 +168,9 @@ def enviar_email_otp(email_destino, codigo):
         msg = MIMEMultipart()
         msg["From"] = smtp_user
         msg["To"] = email_destino
-        msg["Subject"] = f"Seu código de verificação PayFlow: {codigo}"
+        msg["Subject"] = f"Seu código de verificação ConectaSaúde: {codigo}"
         
-        body = f"Olá!\n\nSeu código de autenticação de dois fatores para o PayFlow é: {codigo}\n\nEste código expira em 5 minutos."
+        body = f"Olá!\n\nSeu código de autenticação de dois fatores para o ConectaSaúde é: {codigo}\n\nEste código expira em 5 minutos."
         msg.attach(MIMEText(body, "plain"))
         
         server = smtplib.SMTP(smtp_server, int(smtp_port))
@@ -254,15 +284,23 @@ def pagina_otp():
     csrf = gerar_csrf()
     return render_template("otp.html", csrf_token=csrf)
 
+@app.route("/facial")
+def pagina_facial():
+    # Rota da biometria facial, exige pré-autenticação válida
+    if "pre_auth_email" not in session:
+        return redirect(url_for("pagina_login"))
+    csrf = gerar_csrf()
+    return render_template("facial.html", csrf_token=csrf)
+
 @app.route("/dashboard")
 @requer_login
 def pagina_dashboard():
     return render_template("dashboard.html", active="dashboard")
 
-@app.route("/transacoes")
+@app.route("/consultas")
 @requer_login
-def pagina_transacoes():
-    return render_template("transacoes.html", active="transacoes")
+def pagina_consultas():
+    return render_template("consultas.html", active="consultas")
 
 @app.route("/seguranca")
 @requer_login
@@ -274,15 +312,15 @@ def pagina_seguranca():
 def pagina_perfil():
     return render_template("perfil.html", active="perfil")
 
-@app.route("/cartoes")
+@app.route("/cartao-sus")
 @requer_login
-def pagina_cartoes():
-    return render_template("cartoes.html", active="cartoes")
+def pagina_cartao_sus():
+    return render_template("cartao_sus.html", active="cartao-sus")
 
-@app.route("/investimentos")
+@app.route("/unidades")
 @requer_login
-def pagina_investimentos():
-    return render_template("investimentos.html", active="investimentos")
+def pagina_unidades():
+    return render_template("unidades.html", active="unidades")
 
 # ── API ───────────────────────────────────────────────────────────────────────
 
@@ -465,14 +503,88 @@ def verificar_otp():
     if csrf:
         session["_csrf"] = csrf
         
-    session.permanent = True          # FIX 9: usa PERMANENT_SESSION_LIFETIME
+    session.permanent = True
+    session["pre_auth_email"] = email
+    session["pre_auth_nome"]  = usuarios[email]["nome"]
+    session["pre_auth_ip"]    = request.remote_addr
+    session["pre_auth_user_agent"] = request.headers.get("User-Agent")
+    
+    registrar_log_auditoria("OTP_VERIFICADO", email=email)
+    return jsonify({"mensagem": "Código OTP verificado com sucesso. Prossiga para a biometria facial.", "nome": usuarios[email]["nome"]})
+
+
+@app.route("/api/verificar-facial", methods=["POST"])
+def verificar_facial():
+    # Rate limit e bloqueio de IP também se aplicam
+    ip = request.remote_addr
+    email = session.get("pre_auth_email")
+    nome = session.get("pre_auth_nome")
+    
+    if not email:
+        return jsonify({"erro": "Sessão inválida ou expirada."}), 401
+        
+    bloqueado, msg_bl = verificar_bloqueio(ip, email)
+    if bloqueado:
+        return jsonify({"erro": msg_bl}), 429
+        
+    # Valida CSRF
+    if not csrf_valido():
+        return jsonify({"erro": "Token CSRF inválido."}), 403
+        
+    # Pinning de IP e UA na transição do OTP para Biometria
+    if session.get("pre_auth_ip") != request.remote_addr or session.get("pre_auth_user_agent") != request.headers.get("User-Agent"):
+        registrar_log_auditoria("FACIAL_PINNING_FALHA", email=email, status="falha")
+        session.clear()
+        return jsonify({"erro": "Sequestro de sessão suspeito detectado!"}), 401
+        
+    # Promoção para sessão permanente logada
+    csrf = session.get("_csrf")
+    session.clear()
+    if csrf:
+        session["_csrf"] = csrf
+        
+    session.permanent = True
     session["usuario"] = email
-    session["nome"]    = usuarios[email]["nome"]
+    session["nome"]    = nome
     session["ip"]      = request.remote_addr
     session["user_agent"] = request.headers.get("User-Agent")
     
     registrar_log_auditoria("LOGIN_SUCESSO", email=email)
-    return jsonify({"mensagem": f"Bem-vindo, {usuarios[email]['nome']}!", "nome": usuarios[email]["nome"]})
+    return jsonify({"mensagem": f"Biometria facial validada! Bem-vindo, {nome}!", "nome": nome})
+
+
+@app.route("/api/cripto-demo", methods=["POST"])
+@requer_login
+def api_cripto_demo():
+    if not csrf_valido():
+        return jsonify({"erro": "Token CSRF inválido."}), 403
+        
+    dados = request.get_json(silent=True) or {}
+    texto = dados.get("texto", "")
+    cifra = dados.get("cifra", "cesar")
+    decodificar = bool(dados.get("decodificar", False))
+    
+    if not texto:
+        return jsonify({"resultado": ""})
+        
+    if cifra == "cesar":
+        try:
+            chave = int(dados.get("chave", 3))
+        except ValueError:
+            chave = 3
+        resultado = cifra_cesar(texto, chave, decodificar)
+    elif cifra == "vigenere":
+        chave = str(dados.get("chave", "chave")).strip()
+        resultado = cifra_vigenere(texto, chave, decodificar)
+    elif cifra == "bcrypt":
+        if decodificar:
+            return jsonify({"erro": "Bcrypt é um hash de via única e não pode ser decodificado!"}), 400
+        salt = bcrypt.gensalt(rounds=12)
+        resultado = bcrypt.hashpw(texto.encode("utf-8"), salt).decode("utf-8")
+    else:
+        return jsonify({"erro": "Cifra desconhecida."}), 400
+        
+    return jsonify({"resultado": resultado})
 
 
 @app.route("/api/me")

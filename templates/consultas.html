@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ConectaSaúde — Perfil</title>
+<title>ConectaSaúde — Consultas</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -53,52 +53,72 @@
   <div class="main-content">
     <header class="topbar">
       <div>
-        <div class="topbar-title">Perfil</div>
-        <div class="topbar-sub">Gerencie suas informações de paciente</div>
+        <div class="topbar-title">Consultas</div>
+        <div class="topbar-sub">Histórico e novos agendamentos</div>
       </div>
       <div class="topbar-right">
         <div class="user-avatar" id="top-initials" style="width:36px;height:36px;font-size:14px">--</div>
       </div>
     </header>
     <div class="page-content">
-      <div class="profile-header">
-        <div class="profile-avatar" id="profile-initials">--</div>
-        <div>
-          <div class="profile-name" id="profile-name"></div>
-          <div class="profile-email" id="profile-email"></div>
-          <div class="profile-since" id="profile-since">Paciente ativo desde Mai 2026</div>
-        </div>
+      <div class="tx-toolbar">
+        <input type="text" id="tx-search" class="tx-search" placeholder="🔍  Buscar por especialidade ou unidade…">
+        <button class="filter-btn active" data-filter="all">Todas</button>
+        <button class="filter-btn" data-filter="sus">SUS</button>
+        <button class="filter-btn" data-filter="particular">Particular/Convênio</button>
+        <button class="btn-new-tx" id="btn-abrir-modal">+ Novo Agendamento</button>
       </div>
-      <div class="profile-grid">
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">Informações pessoais</span></div>
-          <div class="panel-body" style="display:flex;flex-direction:column;gap:1rem">
-            <div class="field">
-              <label>Nome completo</label>
-              <input type="text" id="profile-input-name" placeholder="Seu nome">
-            </div>
-            <div class="field">
-              <label>E-mail</label>
-              <input type="email" id="profile-input-email" placeholder="seu@email.com" readonly style="opacity:0.5;cursor:not-allowed">
-            </div>
-            <button class="btn" style="margin-top:0" id="btn-atualizar-perfil">Salvar alterações</button>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-header"><span class="panel-title">Alterar senha</span></div>
-          <div class="panel-body" style="display:flex;flex-direction:column;gap:1rem">
-            <div class="field"><label>Senha atual</label><input type="password" id="senha-atual" placeholder="••••••••" autocomplete="current-password"></div>
-            <div class="field"><label>Nova senha</label><input type="password" id="senha-nova" placeholder="••••••••" autocomplete="new-password"></div>
-            <div class="field"><label>Confirmar nova senha</label><input type="password" id="senha-confirma" placeholder="••••••••" autocomplete="new-password"></div>
-            <button class="btn" style="margin-top:0" id="btn-atualizar-senha">Atualizar senha</button>
-          </div>
-        </div>
+      <div class="panel">
+        <table class="tx-table" style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr style="text-align: left; border-bottom: 2px solid var(--border);">
+              <th style="padding: 12px 1.5rem;">Especialidade / Médico</th>
+              <th style="padding: 12px 1rem;">Data & Hora</th>
+              <th style="padding: 12px 1rem;">Local</th>
+              <th style="padding: 12px 1rem;">Tipo</th>
+              <th style="padding: 12px 1.5rem; text-align: right;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="tx-table-body"></tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
+
+<div id="nova-tx-overlay" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Novo Agendamento</span>
+      <button class="modal-close" id="btn-fechar-modal">×</button>
+    </div>
+    <div class="field"><label>Especialidade ou Médico</label>
+      <input type="text" id="ntx-nome" placeholder="Ex: Clínico Geral, Cardiologia, Dr. Carlos…">
+    </div>
+    <div class="field"><label>Data & Hora</label>
+      <input type="datetime-local" id="ntx-valor" placeholder="Selecione data e hora">
+    </div>
+    <div class="field"><label>Tipo de Atendimento</label>
+      <select id="ntx-tipo">
+        <option value="sus">🩺 Sistema Único de Saúde (SUS)</option>
+        <option value="particular">🏥 Particular / Convênio</option>
+      </select>
+    </div>
+    <div class="field"><label>Unidade de Saúde</label>
+      <select id="ntx-cat">
+        <option>UBS Central - Centro</option>
+        <option>UBS Zona Sul - Nova Brasília</option>
+        <option>Hospital Universitário</option>
+        <option>Clínica Integrada Conecta</option>
+        <option>Ambulatório Médico do SUS</option>
+      </select>
+    </div>
+    <button class="btn" id="btn-salvar-transacao">Agendar Consulta</button>
+    <button class="btn btn-ghost" id="btn-cancelar-modal">Cancelar</button>
+  </div>
+</div>
 <div id="toast-wrap" class="toast-wrap"></div>
 <script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/shared.js') }}"></script>
-<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/perfil.js') }}"></script>
+<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/consultas.js') }}"></script>
 </body>
 </html>

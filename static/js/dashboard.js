@@ -1,30 +1,23 @@
-// dashboard.js — dados mockados para o dashboard
+// dashboard.js — Dados mockados de saúde para o dashboard ConectaSaúde
 
 const MOCK_STATS = [
-  { label: "Saldo atual",    value: "R$ 12.847,50", icon: "💰", trend: "+8,2%",  up: true  },
-  { label: "Receitas (mês)", value: "R$  4.320,00", icon: "📈", trend: "+12,5%", up: true  },
-  { label: "Despesas (mês)", value: "R$  2.190,30", icon: "📉", trend: "-3,1%",  up: false },
-  { label: "Transações",     value: "12",            icon: "🔄", trend: "+4",     up: true  },
+  { label: "Consultas Agendadas", value: "3", icon: "🗓️", trend: "+1",  up: true  },
+  { label: "Consultas Realizadas", value: "14", icon: "✅", trend: "+3", up: true  },
+  { label: "Postos Próximos",     value: "5", icon: "🏥", trend: "Ativo", up: true },
+  { label: "Campanhas de Vacina", value: "2", icon: "💉", trend: "Ativas", up: true  },
 ];
 
 const MOCK_CHART = {
-  labels:   ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
-  receitas: [3800, 4200, 3600, 5100, 4700, 4320],
-  despesas: [2100, 1800, 2400, 1950, 2300, 2190],
+  labels:     ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
+  agendadas:  [5, 8, 4, 9, 6, 3],
+  realizadas: [4, 7, 4, 8, 5, 3],
 };
 
 const MOCK_RECENTES = [
-  { id: 1, nome: "Salário",          valor: 3500.00, tipo: "credit", cat: "Renda",       data: "2025-06-02" },
-  { id: 2, nome: "Supermercado",     valor:  320.50, tipo: "debit",  cat: "Alimentação", data: "2025-06-01" },
-  { id: 3, nome: "Netflix",          valor:   45.90, tipo: "debit",  cat: "Lazer",       data: "2025-05-31" },
-  { id: 4, nome: "Freelance Design", valor:  820.00, tipo: "credit", cat: "Renda",       data: "2025-05-30" },
-  { id: 5, nome: "Conta de Luz",     valor:  198.40, tipo: "debit",  cat: "Moradia",     data: "2025-05-29" },
+  { id: 1, nome: "Clínico Geral · Dra. Cláudia Santos", tipo: "sus",        cat: "UBS Central - Centro",         data: "2026-06-08" },
+  { id: 2, nome: "Cardiologia · Dr. Marco Aurélio",     tipo: "particular", cat: "Hospital Universitário",       data: "2026-06-12" },
+  { id: 3, nome: "Odontologia · Dra. Amanda Reis",      tipo: "sus",        cat: "UBS Zona Sul - Nova Brasília", data: "2026-06-15" },
 ];
-
-const CAT_ICONS = {
-  Renda: "💼", Alimentação: "🛒", Lazer: "🎬", Moradia: "🏠", Transporte: "🚗",
-  Saúde: "🏥", Educação: "📚", Serviços: "🔧", Transferência: "↔️", Outros: "📦",
-};
 
 function renderStats() {
   const grid = document.getElementById("stats-grid");
@@ -48,9 +41,7 @@ function renderRecentTx() {
   list.innerHTML = "";
 
   MOCK_RECENTES.forEach((tx) => {
-    const sinal = tx.tipo === "credit" ? "+" : "-";
-    const cor   = tx.tipo === "credit" ? "var(--green)" : "var(--red)";
-    const icon  = CAT_ICONS[tx.cat] || "📦";
+    const icon  = tx.tipo === "sus" ? "🩺" : "🏥";
     const data  = new Date(tx.data + "T00:00:00").toLocaleDateString("pt-BR");
 
     const item = document.createElement("div");
@@ -73,8 +64,8 @@ function renderRecentTx() {
 
     const amount = document.createElement("div");
     amount.className = "tx-amount";
-    amount.style.color = cor;
-    amount.textContent = `${sinal} R$ ${tx.valor.toFixed(2).replace(".", ",")}`;
+    amount.style.color = tx.tipo === "sus" ? "var(--green)" : "var(--sun)";
+    amount.textContent = tx.tipo === "sus" ? "SUS" : "Convênio";
 
     body.appendChild(name);
     body.appendChild(meta);
@@ -97,16 +88,16 @@ function renderChart() {
         labels: MOCK_CHART.labels,
         datasets: [
           {
-            label: "Receitas",
-            data: MOCK_CHART.receitas,
-            backgroundColor: "rgba(99,179,237,0.75)",
+            label: "Agendadas",
+            data: MOCK_CHART.agendadas,
+            backgroundColor: "rgba(30,98,235,0.75)",
             borderRadius: 6,
             borderSkipped: false,
           },
           {
-            label: "Despesas",
-            data: MOCK_CHART.despesas,
-            backgroundColor: "rgba(252,129,129,0.65)",
+            label: "Realizadas",
+            data: MOCK_CHART.realizadas,
+            backgroundColor: "rgba(16,185,129,0.75)",
             borderRadius: 6,
             borderSkipped: false,
           },
@@ -117,14 +108,14 @@ function renderChart() {
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            labels: { color: "#a0aec0", font: { family: "'Syne', sans-serif", size: 12 } },
+            labels: { color: "#64748b", font: { family: "'Plus Jakarta Sans', sans-serif", size: 12 } },
           },
         },
         scales: {
-          x: { ticks: { color: "#718096" }, grid: { color: "rgba(255,255,255,0.05)" } },
+          x: { ticks: { color: "#64748b" }, grid: { color: "rgba(0,0,0,0.05)" } },
           y: {
-            ticks: { color: "#718096", callback: (v) => "R$ " + v.toLocaleString("pt-BR") },
-            grid: { color: "rgba(255,255,255,0.05)" },
+            ticks: { color: "#64748b", stepSize: 2 },
+            grid: { color: "rgba(0,0,0,0.05)" },
           },
         },
       },

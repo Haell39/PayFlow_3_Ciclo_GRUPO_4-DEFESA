@@ -8,36 +8,36 @@
    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
    
    :root {
-     /* ── Paleta principal (da imagem) ── */
-     --sun:          #F5C842;
-     --sun-light:    #FDE98A;
-     --sun-pale:     #FFF8D6;
-     --green:        #5BA85A;
-     --green-light:  #A8D5A2;
-     --green-pale:   #E8F5E4;
-     --blue-neon:    #4DD9F0;
-     --blue-pale:    #D6F5FC;
-     --gold:         #D4A017;
-     --gold-dark:    #A07810;
-     --skin:         #F2C89B;
-     --skin-dark:    #C8925A;
+     /* ── Paleta principal (ConectaSaúde) ── */
+     --sun:          #1e62eb;          /* Principal: Azul Hospital */
+     --sun-light:    #6390f2;          /* Azul Médio */
+     --sun-pale:     #e8effd;          /* Azul Muito Claro */
+     --green:        #10b981;          /* Verde Saúde */
+     --green-light:  #6ee7b7;          /* Verde Claro */
+     --green-pale:   #ecfdf5;          /* Verde Muito Claro */
+     --blue-neon:    #f97316;          /* Destaque / Laranja */
+     --blue-pale:    #fff3e0;          /* Laranja Muito Claro */
+     --gold:         #1e62eb;          /* Ajustado para consistência */
+     --gold-dark:    #0c46be;          /* Azul Escuro */
+     --skin:         #fdba74;          /* Tom de Pele / Laranja Claro */
+     --skin-dark:    #f97316;          /* Laranja */
    
      /* ── Superfícies ── */
-     --bg:           #FFFDF0;
+     --bg:           #f8fafc;          /* Cinza Claro */
      --surface:      #FFFFFF;
-     --surface2:     #FFF8E0;
-     --surface3:     #FFF3C4;
-     --border:       #E8D870;
-     --border-hover: #C9B840;
+     --surface2:     #f1f5f9;          /* Cinza Médio */
+     --surface3:     #e2e8f0;          /* Cinza Escuro */
+     --border:       #cbd5e1;          /* Borda Clássica */
+     --border-hover: #94a3b8;          /* Borda Hover */
    
      /* ── Texto ── */
-     --text:         #2C1F00;
-     --muted:        #7A6830;
+     --text:         #0f172a;          /* Texto Escuro */
+     --muted:        #64748b;          /* Muted */
    
      /* ── Semânticas ── */
-     --error:        #c0392b;
-     --success:      #5BA85A;
-     --warn:         #e67e22;
+     --error:        #ef4444;
+     --success:      #10b981;
+     --warn:         #f59e0b;
    
      /* ── Tipografia ── */
      --sans:         'Plus Jakarta Sans', sans-serif;
@@ -1107,4 +1107,179 @@
    }
    .copy-icon:hover {
      color: var(--gold-dark);
+   }
+
+   /* ══════════════════════════════════════════
+      BIOMETRIA FACIAL (Reconhecimento Facial)
+      ══════════════════════════════════════════ */
+   .facial-container {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     gap: 1.5rem;
+     margin: 1.5rem 0;
+   }
+
+   .webcam-outer-frame {
+     position: relative;
+     width: 260px;
+     height: 260px;
+     border-radius: 50%;
+     border: 4px solid var(--sun);
+     box-shadow: 0 0 25px rgba(30, 98, 235, 0.4);
+     overflow: hidden;
+     background: #000;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+   }
+
+   .webcam-outer-frame.success-glow {
+     border-color: var(--green) !important;
+     box-shadow: 0 0 25px rgba(16, 185, 129, 0.6) !important;
+   }
+
+   .webcam-outer-frame.error-glow {
+     border-color: var(--error) !important;
+     box-shadow: 0 0 25px rgba(239, 68, 68, 0.6) !important;
+   }
+
+   .webcam-video {
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+     transform: scaleX(-1); /* espelhar vídeo */
+   }
+
+   .webcam-placeholder {
+     position: absolute;
+     inset: 0;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     color: #64748b;
+     gap: 10px;
+     font-size: 13px;
+     padding: 20px;
+     text-align: center;
+     background: #090d16;
+   }
+
+   .webcam-placeholder i {
+     font-size: 40px;
+     color: var(--sun);
+   }
+
+   .scan-line {
+     position: absolute;
+     left: 0;
+     width: 100%;
+     height: 4px;
+     background: linear-gradient(180deg, rgba(255,152,0,0), rgba(255,152,0,0.8), rgba(255,152,0,0));
+     box-shadow: 0 0 12px rgba(255, 152, 0, 0.8);
+     animation: verticalScan 2s infinite ease-in-out;
+     pointer-events: none;
+     z-index: 5;
+   }
+
+   .webcam-outer-frame.success-glow .scan-line {
+     background: linear-gradient(180deg, rgba(16,185,129,0), rgba(16,185,129,0.8), rgba(16,185,129,0));
+     box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+     animation-play-state: paused;
+   }
+
+   @keyframes verticalScan {
+     0% { top: 0%; }
+     50% { top: 98%; }
+     100% { top: 0%; }
+   }
+
+   .scan-status-text {
+     font-weight: 700;
+     font-size: 15px;
+     color: var(--text);
+     text-align: center;
+     min-height: 22px;
+   }
+
+   .scan-status-text.scanning {
+     color: var(--blue-neon);
+     animation: pulseText 1.5s infinite;
+   }
+
+   .scan-status-text.success {
+     color: var(--green);
+   }
+
+   .scan-status-text.error {
+     color: var(--error);
+   }
+
+   @keyframes pulseText {
+     0% { opacity: 0.7; }
+     50% { opacity: 1; }
+     100% { opacity: 0.7; }
+   }
+
+   /* ══════════════════════════════════════════
+      CRYPTO DEMO PANEL (Demonstrador de Cripto)
+      ══════════════════════════════════════════ */
+   .crypto-demo-container {
+     display: flex;
+     flex-direction: column;
+     gap: 1.5rem;
+   }
+
+   .crypto-control-card {
+     background: var(--surface2);
+     border: 1px solid var(--border);
+     border-radius: var(--radius-sm);
+     padding: 1.25rem;
+   }
+
+   .crypto-result-box {
+     font-family: var(--mono);
+     font-size: 14px;
+     background: #0f172a;
+     color: #38bdf8;
+     padding: 12px 16px;
+     border-radius: 8px;
+     border: 1px solid #334155;
+     min-height: 44px;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     word-break: break-all;
+   }
+
+   .crypto-result-box.hash {
+     color: #34d399;
+   }
+
+   .crypto-grid-3 {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+     gap: 1rem;
+   }
+
+   .badge-crypto {
+     font-size: 11px;
+     font-weight: 700;
+     padding: 3px 8px;
+     border-radius: 6px;
+     text-transform: uppercase;
+     margin-left: 8px;
+   }
+
+   .badge-crypto.weak {
+     background: rgba(239, 68, 68, 0.15);
+     color: var(--error);
+     border: 1px solid rgba(239, 68, 68, 0.3);
+   }
+
+   .badge-crypto.strong {
+     background: rgba(16, 185, 129, 0.15);
+     color: var(--green);
+     border: 1px solid rgba(16, 185, 129, 0.3);
    }

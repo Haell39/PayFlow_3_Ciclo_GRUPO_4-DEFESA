@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConectaSaúde — Cartão SUS & Planos</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+      <div class="logo-text">Conecta<span>Saúde</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Principal</span>
+      <a class="nav-item {% if active == 'dashboard' %}active{% endif %}" href="{{ url_for('pagina_dashboard') }}">
+        <i class="bi bi-grid-1x2-fill nav-icon"></i> Dashboard
+      </a>
+      <a class="nav-item {% if active == 'consultas' %}active{% endif %}" href="{{ url_for('pagina_consultas') }}">
+        <i class="bi bi-calendar-event nav-icon"></i> Consultas
+        <span class="nav-badge" id="sidebar-badge-consultas">3</span>
+      </a>
+      <span class="nav-section-label">Serviços</span>
+      <a class="nav-item {% if active == 'cartao-sus' %}active{% endif %}" href="{{ url_for('pagina_cartao_sus') }}">
+        <i class="bi bi-card-checklist nav-icon"></i> Cartão SUS & Planos
+      </a>
+      <a class="nav-item {% if active == 'unidades' %}active{% endif %}" href="{{ url_for('pagina_unidades') }}">
+        <i class="bi bi-hospital nav-icon"></i> Unidades de Saúde
+      </a>
+      <span class="nav-section-label">Conta</span>
+      <a class="nav-item {% if active == 'seguranca' %}active{% endif %}" href="{{ url_for('pagina_seguranca') }}">
+        <i class="bi bi-shield-check nav-icon"></i> Segurança
+      </a>
+      <a class="nav-item {% if active == 'perfil' %}active{% endif %}" href="{{ url_for('pagina_perfil') }}">
+        <i class="bi bi-person-circle nav-icon"></i> Perfil
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" id="sb-initials">--</div>
+        <div class="user-info">
+          <div class="user-name" id="sb-nome">Carregando…</div>
+          <div class="user-email" id="sb-email"></div>
+        </div>
+        <i class="bi bi-power user-logout" title="Sair" id="btn-logout"></i>
+      </div>
+    </div>
+  </aside>
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">Cartão SUS & Planos</div>
+        <div class="topbar-sub">Sua carteira de identificação de saúde digital</div>
+      </div>
+      <div class="topbar-right">
+        <div class="user-avatar" id="top-initials" style="width:36px;height:36px;font-size:14px">--</div>
+      </div>
+    </header>
+    <div class="page-content">
+      <div class="cards-layout">
+        <!-- Coluna 1: Cartão SUS -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Cartão Nacional de Saúde (SUS)</span>
+            <span class="tag" style="background: var(--green-pale); border-color: var(--green-light); color: var(--green)">Válido</span>
+          </div>
+          <div class="panel-body" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="credit-card-wrapper">
+              <!-- Cartão do SUS Customizado -->
+              <div id="physical-card" class="physical-card" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border-color: #38bdf8;">
+                <div class="card-blocked-overlay" style="background: rgba(15, 23, 42, 0.75);">
+                  <i class="bi bi-eye-slash-fill"></i>
+                  <span>Cartão Ocultado</span>
+                </div>
+                <div class="card-header">
+                  <div class="card-logo" style="font-size:14px; font-weight:800; letter-spacing: 0;">💚 SUS <span>Conecta</span></div>
+                  <div style="font-size: 11px; font-weight: 700; color: rgba(255, 255, 255, 0.85); text-transform: uppercase;">Ministério da Saúde</div>
+                </div>
+                <div class="card-number" id="sus-card-number" style="font-size: 1.25rem; letter-spacing: 3px; margin-bottom: 1.25rem;">898 0001 2345 6789</div>
+                <div class="card-footer">
+                  <div>
+                    <div class="card-holder-label">Paciente</div>
+                    <div class="card-holder-name" id="card-holder-name">CARREGANDO...</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div class="card-expiry-label">Emissão</div>
+                    <div class="card-expiry" id="sus-card-emissao">05/2026</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card-control-panel">
+              <div class="control-row">
+                <div>
+                  <div style="font-weight:700; font-size:14px;">Ocultar número na tela</div>
+                  <div style="font-size:12px; color:var(--muted)">Oculte seus dados para privacidade em locais públicos</div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="block-switch">
+                  <span class="slider-toggle"></span>
+                </label>
+              </div>
+              
+              <hr style="border:0; border-top: 1.5px solid var(--border); margin:0.5rem 0">
+              
+              <div class="limit-slider-container">
+                <div class="control-row">
+                  <div>
+                    <div style="font-weight:700; font-size:14px;">Limite de compartilhamento de dados</div>
+                    <div style="font-size:12px; color:var(--muted)">Ajuste o nível de acesso que as clínicas têm ao seu histórico médico</div>
+                  </div>
+                </div>
+                
+                <div style="margin-top: 1.25rem;">
+                  <input type="range" id="limit-slider" class="slider-input" min="1" max="3" step="1" value="2">
+                </div>
+                
+                <div class="limit-values">
+                  <span>Compartilhamento: <strong id="limit-used" style="color: var(--sun)">Parcial</strong></span>
+                  <span>Permissões: <strong id="limit-available" style="color: var(--green)">Conformidade LGPD</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna 2: Cartão de Plano de Saúde Privado -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Plano de Saúde Privado</span>
+            <span class="tag">Opcional</span>
+          </div>
+          <div class="panel-body" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; justify-content: center;">
+            <div id="virtual-card-area" class="virtual-card-area">
+              <i class="bi bi-plus-circle-fill" style="font-size: 2.5rem; color: var(--sun); cursor: pointer;" id="icon-gerar-cartao"></i>
+              <div style="margin-top: 1rem; color: rgba(15,23,42,0.6);">Você não possui um plano de saúde particular associado.</div>
+              <button class="btn" style="margin-top: 1.5rem; width: auto; padding: 10px 20px" id="btn-gerar-cartao">Vincular Carteira de Convênio</button>
+            </div>
+            
+            <div id="virtual-card-display" style="display:none;" class="credit-card-wrapper">
+              <div class="physical-card virtual-card-glow" style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); border-color: #6ee7b7;">
+                <div class="card-header">
+                  <div class="card-logo" style="color:#fff">Amil <span>Saúde</span> <span class="tag" style="background:#fff; border-color:#10b981; color:#047857; font-size:9px; vertical-align:middle; padding:1px 4px">Convênio</span></div>
+                  <div class="card-chip" style="background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%)"></div>
+                </div>
+                <div class="card-number" id="vcard-number" style="color:#fff; font-size:1.15rem">7492 8391 0029 3847 <i class="bi bi-copy copy-icon" id="btn-copiar-vcard" title="Copiar número" style="color: rgba(255,255,255,0.7)"></i></div>
+                <div class="card-footer" style="color:#fff">
+                  <div>
+                    <div class="card-holder-label" style="color:rgba(255,255,255,0.7)">Beneficiário</div>
+                    <div class="card-holder-name" id="vcard-holder-name">CARREGANDO...</div>
+                  </div>
+                  <div style="display: flex; gap: 15px;">
+                    <div>
+                      <div class="card-holder-label" style="color:rgba(255,255,255,0.7)">Vias <i class="bi bi-eye-fill copy-icon" id="btn-toggle-cvv" title="Mostrar Via" style="color: rgba(255,255,255,0.7)"></i></div>
+                      <div class="card-expiry" id="vcard-cvv">••</div>
+                    </div>
+                    <div>
+                      <div class="card-holder-label" style="color:rgba(255,255,255,0.7)">Validade</div>
+                      <div class="card-expiry">12/28</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top: 1.25rem; text-align: center; width: 100%;">
+                <button class="btn btn-ghost" style="width:auto; padding:8px 16px; font-size:12px" id="btn-excluir-cartao">Desvincular Convênio</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast-wrap" class="toast-wrap"></div>
+<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/shared.js') }}"></script>
+<script nonce="{{ nonce }}" src="{{ url_for('static', filename='js/cartao_sus.js') }}"></script>
+</body>
+</html>

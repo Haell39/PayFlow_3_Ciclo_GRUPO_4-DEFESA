@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PayFlow — Segurança</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<title>ConectaSaúde — Segurança</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -12,24 +12,24 @@
 <div class="app-shell">
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon"><i class="bi bi-lock-fill"></i></div>
-      <div class="logo-text">Pay<span>Flow</span></div>
+      <div class="logo-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+      <div class="logo-text">Conecta<span>Saúde</span></div>
     </div>
     <nav class="sidebar-nav">
       <span class="nav-section-label">Principal</span>
       <a class="nav-item {% if active == 'dashboard' %}active{% endif %}" href="{{ url_for('pagina_dashboard') }}">
         <i class="bi bi-grid-1x2-fill nav-icon"></i> Dashboard
       </a>
-      <a class="nav-item {% if active == 'transacoes' %}active{% endif %}" href="{{ url_for('pagina_transacoes') }}">
-        <i class="bi bi-arrow-left-right nav-icon"></i> Transações
-        <span class="nav-badge">12</span>
+      <a class="nav-item {% if active == 'consultas' %}active{% endif %}" href="{{ url_for('pagina_consultas') }}">
+        <i class="bi bi-calendar-event nav-icon"></i> Consultas
+        <span class="nav-badge" id="sidebar-badge-consultas">3</span>
       </a>
       <span class="nav-section-label">Serviços</span>
-      <a class="nav-item {% if active == 'cartoes' %}active{% endif %}" href="{{ url_for('pagina_cartoes') }}">
-        <i class="bi bi-credit-card-2-front-fill nav-icon"></i> Cartões
+      <a class="nav-item {% if active == 'cartao-sus' %}active{% endif %}" href="{{ url_for('pagina_cartao_sus') }}">
+        <i class="bi bi-card-checklist nav-icon"></i> Cartão SUS & Planos
       </a>
-      <a class="nav-item {% if active == 'investimentos' %}active{% endif %}" href="{{ url_for('pagina_investimentos') }}">
-        <i class="bi bi-graph-up-arrow nav-icon"></i> Investimentos
+      <a class="nav-item {% if active == 'unidades' %}active{% endif %}" href="{{ url_for('pagina_unidades') }}">
+        <i class="bi bi-hospital nav-icon"></i> Unidades de Saúde
       </a>
       <span class="nav-section-label">Conta</span>
       <a class="nav-item {% if active == 'seguranca' %}active{% endif %}" href="{{ url_for('pagina_seguranca') }}">
@@ -54,67 +54,143 @@
     <header class="topbar">
       <div>
         <div class="topbar-title">Segurança</div>
-        <div class="topbar-sub">Proteções ativas na sua conta</div>
+        <div class="topbar-sub">Defesas cibernéticas ativas e trilha de auditoria</div>
       </div>
       <div class="topbar-right">
         <div class="user-avatar" id="top-initials" style="width:36px;height:36px;font-size:14px">--</div>
       </div>
     </header>
     <div class="page-content">
-      <div class="security-grid" style="margin-bottom:1.25rem">
-        <div class="security-card" style="animation-delay:0s">
-          <div class="sec-icon green"><i class="bi bi-key-fill"></i></div>
+      
+      <!-- Grid de Segurança (Proteções) -->
+      <div class="security-grid" style="margin-bottom:1.5rem">
+        <div class="security-card">
+          <div class="sec-icon green" style="background:var(--green-pale); color:var(--success)"><i class="bi bi-key-fill"></i></div>
           <div>
-            <div class="sec-title">Hash bcrypt + Salt</div>
-            <div class="sec-desc">Senhas nunca armazenadas em texto puro. Cada senha recebe um salt único com 12 rounds de hashing.</div>
+            <div class="sec-title">Hash bcrypt + Salt (Sabe)</div>
+            <div class="sec-desc">Senhas nunca armazenadas em texto limpo. Cada senha recebe um salt único com 12 rounds de processamento.</div>
             <div class="sec-status"><span class="status-pill ok">Ativo</span></div>
           </div>
         </div>
-        <div class="security-card" style="animation-delay:0.07s">
-          <div class="sec-icon purple"><i class="bi bi-phone-fill"></i></div>
+        <div class="security-card">
+          <div class="sec-icon blue" style="background:var(--sun-pale); color:var(--sun)"><i class="bi bi-phone-fill"></i></div>
           <div>
-            <div class="sec-title">OTP — 2º Fator</div>
-            <div class="sec-desc">Código de 6 dígitos gerado a cada login com <code>secrets</code>. Expira em 5 minutos, invalidado após 3 tentativas.</div>
+            <div class="sec-title">MFA OTP — 2º Fator (Possui)</div>
+            <div class="sec-desc">Código dinâmico enviado por e-mail no login. Expira em 5 min, com limite rígido de 3 tentativas falhas.</div>
             <div class="sec-status"><span class="status-pill ok">Ativo</span></div>
           </div>
         </div>
-        <div class="security-card" style="animation-delay:0.14s">
-          <div class="sec-icon amber"><i class="bi bi-slash-circle-fill"></i></div>
+        <div class="security-card">
+          <div class="sec-icon red" style="background:var(--blue-pale); color:var(--blue-neon)"><i class="bi bi-camera-video-fill"></i></div>
           <div>
-            <div class="sec-title">Bloqueio por IP</div>
-            <div class="sec-desc">Após 5 tentativas erradas, o IP é bloqueado por 5 minutos — proteção contra força bruta.</div>
+            <div class="sec-title">Scanner Facial — 3º Fator (É)</div>
+            <div class="sec-desc">Reconhecimento biométrico facial via webcam para completar a autenticação multifator do paciente.</div>
             <div class="sec-status"><span class="status-pill ok">Ativo</span></div>
           </div>
         </div>
-        <div class="security-card" style="animation-delay:0.21s">
-          <div class="sec-icon green"><i class="bi bi-cookie"></i></div>
+        <div class="security-card">
+          <div class="sec-icon green" style="background:var(--green-pale); color:var(--success)"><i class="bi bi-shield-lock-fill"></i></div>
           <div>
-            <div class="sec-title">Sessão Flask — HttpOnly</div>
-            <div class="sec-desc">Cookie HttpOnly + SameSite=Strict. Sessão expira em 2 horas. CSRF token protege todas as rotas POST.</div>
+            <div class="sec-title">Proteção CSRF e CSP</div>
+            <div class="sec-desc">Tokens anti-CSRF por sessão e Content Security Policy com Nonce dinâmico para anular ataques XSS.</div>
             <div class="sec-status"><span class="status-pill ok">Ativo</span></div>
           </div>
         </div>
-        <div class="security-card" style="animation-delay:0.28s">
-          <div class="sec-icon purple"><i class="bi bi-shield-fill-check"></i></div>
+        <div class="security-card">
+          <div class="sec-icon red" style="background:var(--blue-pale); color:var(--blue-neon)"><i class="bi bi-person-fill-lock"></i></div>
           <div>
-            <div class="sec-title">Headers HTTP</div>
-            <div class="sec-desc">X-Frame-Options: DENY, X-Content-Type-Options: nosniff, CSP, HSTS e Referrer-Policy em todas as respostas.</div>
+            <div class="sec-title">Session Pinning</div>
+            <div class="sec-desc">Bloqueia sequestros de cookies (Session Hijacking) vinculando rigidamente o IP e User-Agent à sessão.</div>
             <div class="sec-status"><span class="status-pill ok">Ativo</span></div>
           </div>
         </div>
-        <div class="security-card" style="animation-delay:0.35s">
-          <div class="sec-icon amber"><i class="bi bi-lock-fill"></i></div>
+        <div class="security-card">
+          <div class="sec-icon red" style="background:#ffe5e5; color:var(--error)"><i class="bi bi-slash-circle-fill"></i></div>
           <div>
-            <div class="sec-title">Proteção CSRF</div>
-            <div class="sec-desc">Token CSRF único por sessão validado em todos os endpoints POST via header <code>X-CSRF-Token</code>.</div>
+            <div class="sec-title">Bloqueio por Força Bruta</div>
+            <div class="sec-desc">Tentativas falhas bloqueiam temporariamente por IP (20/50 falhas) e Conta (5/10/20 falhas) de forma progressiva.</div>
             <div class="sec-status"><span class="status-pill ok">Ativo</span></div>
           </div>
         </div>
       </div>
+
+      <!-- Demonstrador Didático de Criptografia (Suporte para Apresentação em Slides) -->
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel-header">
+          <span class="panel-title">📚 Demonstrador de Criptografia (Didático para a Aula)</span>
+          <span class="panel-action">Teste de Cifras Históricas vs. Hashing Moderno</span>
+        </div>
+        <div class="panel-body crypto-demo-container">
+          <p style="font-size:13px; color:var(--muted); margin-bottom:0.5rem">
+            Use este painel para demonstrar na apresentação o funcionamento de cifras de substituição (César), cifras polialfabéticas (Vigenère) e o algoritmo moderno de hashing unidirecional com salt (Bcrypt) utilizado para proteger as senhas no sistema.
+          </p>
+          
+          <div class="crypto-grid-3">
+            <!-- Coluna 1: Cifra de César -->
+            <div class="crypto-control-card">
+              <div style="font-weight:700; font-size:14px; margin-bottom:8px">Cifra de César <span class="badge-crypto weak">Fraca</span></div>
+              <div class="field" style="margin-bottom:8px">
+                <label>Texto Plano / Cifrado</label>
+                <input type="text" id="cesar-texto" placeholder="Digite uma palavra para cifrar...">
+              </div>
+              <div class="field" style="margin-bottom:12px">
+                <label>Deslocamento (Chave numérica)</label>
+                <input type="number" id="cesar-chave" value="3" min="1" max="25" style="padding:7px 10px">
+              </div>
+              <div style="display:flex; gap:8px; margin-bottom:12px">
+                <button class="btn" style="padding:6px; font-size:12px; margin:0; flex:1" id="btn-cesar-cifrar">Cifrar</button>
+                <button class="btn btn-ghost" style="padding:6px; font-size:12px; margin:0; flex:1" id="btn-cesar-decifrar">Decifrar</button>
+              </div>
+              <label>Resultado:</label>
+              <div class="crypto-result-box" id="cesar-resultado">---</div>
+            </div>
+
+            <!-- Coluna 2: Cifra de Vigenère -->
+            <div class="crypto-control-card">
+              <div style="font-weight:700; font-size:14px; margin-bottom:8px">Cifra de Vigenère <span class="badge-crypto weak">Fraca</span></div>
+              <div class="field" style="margin-bottom:8px">
+                <label>Texto Plano / Cifrado</label>
+                <input type="text" id="vigenere-texto" placeholder="Digite para cifrar...">
+              </div>
+              <div class="field" style="margin-bottom:12px">
+                <label>Palavra-Chave (Texto)</label>
+                <input type="text" id="vigenere-chave" value="chave" placeholder="Chave textual" style="padding:7px 10px">
+              </div>
+              <div style="display:flex; gap:8px; margin-bottom:12px">
+                <button class="btn" style="padding:6px; font-size:12px; margin:0; flex:1" id="btn-vigenere-cifrar">Cifrar</button>
+                <button class="btn btn-ghost" style="padding:6px; font-size:12px; margin:0; flex:1" id="btn-vigenere-decifrar">Decifrar</button>
+              </div>
+              <label>Resultado:</label>
+              <div class="crypto-result-box" id="vigenere-resultado">---</div>
+            </div>
+
+            <!-- Coluna 3: Bcrypt (Hash com Salto) -->
+            <div class="crypto-control-card">
+              <div style="font-weight:700; font-size:14px; margin-bottom:8px">Bcrypt (Hash + Salto) <span class="badge-crypto strong">Segura</span></div>
+              <div class="field" style="margin-bottom:8px">
+                <label>Texto / Senha</label>
+                <input type="text" id="bcrypt-texto" placeholder="Digite uma senha...">
+              </div>
+              <div class="field" style="margin-bottom:12px">
+                <label>Salto (Automático por Hashing)</label>
+                <input type="text" disabled value="Salt Criptográfico Aleatório" style="padding:7px 10px; background:var(--surface3); opacity:0.8">
+              </div>
+              <div style="display:flex; gap:8px; margin-bottom:12px">
+                <button class="btn" style="padding:6px; font-size:12px; margin:0; flex:1" id="btn-bcrypt-hash">Gerar Hash (Via Única)</button>
+              </div>
+              <label>Hash Produzido (60 caracteres):</label>
+              <div class="crypto-result-box hash" id="bcrypt-resultado" style="font-size:11px; padding:8px">---</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trilha de Auditoria -->
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">Log de acessos recentes</span></div>
+        <div class="panel-header"><span class="panel-title">Log de acessos e eventos de segurança (Audit Log)</span></div>
         <div id="login-log" class="tx-list"></div>
       </div>
+      
     </div>
   </div>
 </div>

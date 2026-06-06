@@ -89,7 +89,7 @@ async function verificarOTP() {
     }
 
     sessionStorage.clear();
-    window.location.href = "/dashboard";
+    window.location.href = "/facial";
   } catch (e) {
     msg.textContent = "Erro de rede.";
     msg.className   = "msg error";

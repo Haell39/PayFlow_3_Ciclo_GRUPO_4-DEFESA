@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token }}">
-<title>PayFlow — Entrar</title>
+<title>ConectaSaúde — Entrar</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -15,19 +15,19 @@
       <div class="auth-image">
         <img src="{{ url_for('static', filename='img/img-login.png') }}" alt="Ilustração">
     </div>      <div class="auth-image-caption">
-        <div class="caption-title">Transfira com facilidade</div>
-        <div class="caption-sub">Envie e receba dinheiro de forma rápida e segura para qualquer pessoa.</div>
+        <div class="caption-title">Agende com facilidade</div>
+        <div class="caption-sub">Marque suas consultas no SUS e clínicas de forma rápida, segura e sem filas.</div>
       </div>
     </div>
     <div class="auth-form-side">
       <div class="card">
         <div class="logo">
-          <div class="logo-icon">$</div>
-          <div class="logo-text">Pay<span>Flow</span></div>
+          <div class="logo-icon">🩺</div>
+          <div class="logo-text">Conecta<span>Saúde</span></div>
         </div>
         <div class="screen active">
           <h2>Entrar na sua conta</h2>
-          <p class="subtitle">Sistema seguro de transferências com dois fatores</p>
+          <p class="subtitle">Sistema de agendamento com autenticação em três etapas</p>
           <div id="login-msg" class="msg"></div>
           <div class="field">
             <label>E-mail</label>

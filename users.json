@@ -17,5 +17,10 @@
     "nome": "Usuario Tres",
     "senha_hash": "$2b$12$/2GFQe6j0bkHwHn9XRRJ7e9SkCX6mHMJxyixbbvcYmT1U9HOf3B/a",
     "criado_em": 1780620033.1581235
+  },
+  "santosrafaelpro@gmail.com": {
+    "nome": "Rael Chess",
+    "senha_hash": "$2b$12$Tj1ka0UjVGZ5ZS3tgrr01uqvvMqtb.mor9kFhAaAwDSsXkMHWQ3sW",
+    "criado_em": 1780714628.953787
   }
 }
